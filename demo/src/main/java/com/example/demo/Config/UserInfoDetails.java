@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// This class holds the UserInfo given by UserDetailsService
 public class UserInfoDetails implements UserDetails {
 
     private String username;
