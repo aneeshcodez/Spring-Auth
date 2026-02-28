@@ -15,10 +15,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name is mandatory")
+    @Column(nullable = false)
     private String username;
 
-    @NotBlank(message = "Name is mandatory")
+    @Column(nullable = false)
     private String password;
 
     private String role;
