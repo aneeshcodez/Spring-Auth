@@ -2,6 +2,7 @@ package com.example.demo.Service;
 
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 
 import java.util.function.Function;
 
@@ -17,6 +18,7 @@ public class JwtService {
     }
 
     private Claims extractAllClaim(String token) {
+        return Jwts.parser()
     }
 
 }
