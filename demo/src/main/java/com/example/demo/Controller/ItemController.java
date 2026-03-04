@@ -1,11 +1,22 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Model.AuthReq;
 import com.example.demo.Model.Item;
 import com.example.demo.Model.User;
 import com.example.demo.Repo.ItemRepo;
 import com.example.demo.Repo.UserRepo;
+import com.example.demo.Service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -16,6 +27,12 @@ public class ItemController {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtService jwtService;
 
 
     // ADD ITEM
@@ -48,5 +65,25 @@ public class ItemController {
     @GetMapping("/hello")
     public String sayHello() {
         return "Hello, World!";
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<Map<String, String>> authenticateUser(@RequestBody AuthReq authReq) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authReq.getUsername(), authReq.getPassword()));
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        if (authentication.isAuthenticated()) {
+
+            String token = jwtService.generateToken(userDetails);
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+
+            return ResponseEntity.ok(response);
+        } else {
+            throw new UsernameNotFoundException("Invalid user details");
+        }
     }
 }
